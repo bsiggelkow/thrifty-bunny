@@ -1,13 +1,13 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'thrifty/bunny/version'
+require 'thrifty_bunny/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "thrifty-bunny"
-  spec.version       = Thrifty::Bunny::VERSION
+  spec.version       = ThriftyBunny::VERSION
   spec.authors       = ["Bill Siggelkow"]
-  spec.email         = ["bill.siggelkow@blinqmedia.com"]
+  spec.email         = ["bsiggelkow@me.com"]
   spec.summary       = "RabbitMQ adapter for Apache Thrift"
   spec.description   = "RabbitMQ adapter for Apache Thrift"
   spec.homepage      = "http://github.com/bsiggelkow/thrifty-bunny"
@@ -20,8 +20,10 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "bundler", "~> 1.7"
   spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency 'rspec'
 
   spec.add_dependency 'thrift'
+  spec.add_dependency 'thin'
   spec.add_dependency 'bunny'
-
+  spec.add_dependency 'uuidtools'
 end
