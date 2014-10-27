@@ -2,5 +2,10 @@
 require_relative '../hello_thrift/client'
 
 client = HelloThrift::Client.new
-res = client.say_hello(ARGV[0] || 'Bob')
-puts res
+
+loop do
+  print "What is your name? "
+  input = gets.strip
+  break if input == 'quit'
+  puts client.say_hello(input)
+end

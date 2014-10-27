@@ -23,7 +23,7 @@ module HelloThrift
     end
 
     def serve
-      service.serve
+      service.serve(log_messages:true)
     end
   end
 
