@@ -6,40 +6,20 @@ module ThriftyBunny
 
     class ProcessingTimeout < Timeout::Error; end
 
-    def initialize(processor, opts={})
+    def initialize(processor, config=Config.new, options={})
 
       @processor = processor
 
-      if opts[:connection].nil?
-
-        if opts[:host].nil?
-          raise ArgumentError, ":host key not provided in opts dict to make connection"
-        end
-
-        if opts[:port].nil?
-          raise ArgumentError, ":port key not provided in opts dict to make connection"
-        end
-
-        vhost = opts[:vhost] || "/"
-        user = opts[:user] || "guest"
-        password = opts[:password] || "guest"
-        ssl = opts[:ssl] || false
-
-        @conn = Bunny.new(:host => opts[:host], :port => opts[:port], :vhost => vhost, :user => user, :password => password, :ssl=> ssl)
+      if options[:connection].nil?
+        @conn = Bunny.new(config.bunny_config)
         @conn.start
       else
-        @conn = opts[:connection]
+        @conn = options[:connection]
       end
 
-      #print "service:", @conn, "\n"
-
-      if not opts.has_key?(:queue_name)
-        raise ArgumentError, "A service queue name has not been specified"
-      end
-
-      @queue_name = opts[:queue_name]
-      @protocol_factory = opts[:protocol_factory] || BinaryProtocolFactory
-      @exchange = opts[:exchange] || nil
+      @queue_name = config.queue
+      @protocol_factory = options[:protocol_factory] || Thrift::BinaryProtocolFactory
+      @exchange = config.exchange
 
     end
 
@@ -95,7 +75,7 @@ module ThriftyBunny
 
           input = StringIO.new payload
           out = StringIO.new
-          transport = IOStreamTransport.new input, out
+          transport = Thrift::IOStreamTransport.new input, out
           protocol = @protocol_factory.new.get_protocol transport
 
           begin

@@ -1,5 +1,6 @@
 require 'thrift'
 require 'bunny'
+require 'uuidtools'
 
 module ThriftyBunny
 
@@ -7,22 +8,12 @@ module ThriftyBunny
 
   class ClientTransport < ::Thrift::BaseTransport
 
-    def initialize(service_queue_name, options={})
-      @service_queue_name = service_queue_name
+    def initialize(config=Config.new, options={})
+      @service_queue_name = config.queue
       @outbuf = Thrift::Bytes.empty_byte_buffer
 
       if options[:connection].nil?
-        host = options[:host] || '127.0.0.1'
-        port = options[:port] || 5672
-
-        vhost = options[:vhost] || "/"
-        user = options[:user] || "guest"
-        password = options[:password] || "guest"
-        ssl = options[:ssl] || false
-
-        @conn = ::Bunny.new( host: host, port: port, vhost: vhost,
-                           user: user, password: password, ssl: ssl)
-
+        @conn = Bunny.new(config.bunny_config)
         @conn.start
         @connection_started = true
       else
@@ -119,9 +110,9 @@ module ThriftyBunny
             print_log "Ignoring timeout - #{@response}", correlation_id
           end
         end
-        @inbuf = StringIO.new Bytes.force_binary_encoding(@response)
+        @inbuf = StringIO.new Thrift::Bytes.force_binary_encoding(@response)
       end
-      @outbuf = Bytes.empty_byte_buffer
+      @outbuf = Thrift::Bytes.empty_byte_buffer
     end
 
     protected

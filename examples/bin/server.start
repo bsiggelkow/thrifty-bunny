@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+require_relative '../hello_thrift/server'
+
+server = HelloThrift::Server.new
+puts "Starting server ..."
+server.serve
+puts "Done."

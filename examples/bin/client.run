@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+require_relative '../hello_thrift/client'
+
+client = HelloThrift::Client.new
+res = client.say_hello(ARGV[0] || 'Bob')
+puts res

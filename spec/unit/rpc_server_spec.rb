@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe 'RpcServer' do
+  let(:server) { ThriftyBunny::RpcServer.new(nil, ThriftyBunny::Config.new) }
   it 'initializes' do
-    server = ThriftyBunny::RpcServer.new(nil)
-    server.should_not be_nil
+    expect(server).to_not be_nil
   end
 end
