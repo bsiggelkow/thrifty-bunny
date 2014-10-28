@@ -34,8 +34,6 @@ module ThriftyBunny
 
     end
 
-
-
     def serve(options={})
       log_messages = options[:log_messages] || false
       max_messages = options[:max_messages].nil? ? 10 : options[:max_messages]
