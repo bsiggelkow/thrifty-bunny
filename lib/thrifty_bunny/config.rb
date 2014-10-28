@@ -14,7 +14,7 @@ module ThriftyBunny
       @ssl = options[:ssl] || false
 
       @queue = options[:queue] || 'rpc_queue'
-      @exchange = options[:queue] || 'rpc_exchange'
+      @exchange = options[:exchange] || 'rpc_exchange'
     end
 
     def bunny_config

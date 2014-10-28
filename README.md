@@ -24,6 +24,39 @@ Or install it yourself as:
 
 ## Usage
 
+The gem provides a Thrift server that integrates with RabbitMQ. You would use this server in standard Thrift fashion:
+
+```ruby
+handler = MyHandler.new
+processor = MyProcessor.new(handler)
+service = ThriftyBunny::RpcServer.new(processor)
+service.serve
+```
+
+Then you would utilize the included ```ClientTransport``` to connect your Thrift client to RabbitMQ:
+
+```ruby
+transport = ThriftyBunny::ClientTransport.new
+protocol = Thrift::BinaryProtocol.new(transport)
+client = MyService::Client.new(protocol)
+client.my_remote_method() # Make the remote procedure call
+```
+
+### Configuration
+
+Both the ```RpcServer``` and the ```ClientTransport``` accept a ```ThriftyBunny::Config``` object that encapsulates the RabbitMQ configuration settings. The default values for the configuration options are:
+
+    option        | value        | notes
+    ------------- | ------------ | -------------------------------------
+    host          | 127.0.0.1    | Host name or IP for the RabbitMQ host
+    port          | 5672         | Port that RabbitMQ is listening on
+    vhost         | /            | Virtual host path
+    user          | guest        | RabbitMQ user
+    password      | guest        | RabbitMQ password
+    queue         | rpc_queue    | Name of RabbitMQ queue for the RPC messages
+    exchange      | rpc_exchange | Name of the RabbitMQ exchange for the RPC messages
+
+
 
 ## Examples
 

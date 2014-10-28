@@ -16,14 +16,11 @@ module HelloThrift
     def initialize(options={})
       handler = Handler.new
       processor = HelloService::Processor.new(handler)
-      # transport = Thrift::ServerSocket.new(port)
-      # transportFactory = Thrift::BufferedTransportFactory.new
       @service = ThriftyBunny::RpcServer.new(processor)
-      # @service = Thrift::SimpleServer.new(processor, transport, transportFactory)
     end
 
     def serve
-      service.serve(log_messages:true)
+      service.serve
     end
   end
 
