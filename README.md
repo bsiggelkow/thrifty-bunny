@@ -66,24 +66,17 @@ An easy way to experiment with the gem is to take a look at the provided example
 
 2. Start up two separate terminals
 
-3. Change to the ```examples``` directory in each terminal:
+3. In one terminal, start the server:
     ```
-    $ cd examples
-    ```
-
-4. In one terminal, start the server:
-    ```
-    $ bundle exec bin/server.start
+    $ bundle exec examples/calculator/server.start
     ```
 
 5. In the other terminal, start the client:
     ```
-    $ bundle exec bin/client.start
+    $ bundle exec examples/calculator/client.start
     ```
 
 6. In the [RabbitMQ admin console](http://localhost:15672), you can monitor the message queues.
-
-The client prompts you to enter a name, then the servers respond by saying hello to you. Feel free to start up additional servers to demonstrate how the system scales. 
 
 ## Contributing
 

@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 require 'thrifty_bunny'
 require_relative 'calculator_service'
 
@@ -34,3 +35,8 @@ module Calculator
   end
 
 end
+
+server = Calculator::Server.new
+puts "Starting server ..."
+server.serve
+puts "Done."

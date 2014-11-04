@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-require_relative '../client'
+require 'thrifty_bunny'
+require_relative 'calculator_service'
 
 class ClientCli
 
@@ -43,7 +44,7 @@ end
 
 transport = ThriftyBunny::ClientTransport.new
 protocol = Thrift::BinaryProtocol.new(transport)
-client = Calculator::Client.new(protocol)
+client = CalculatorService::Client.new(protocol)
 client_cli = ClientCli.new(client)
 
 loop do
