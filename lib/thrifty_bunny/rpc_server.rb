@@ -75,10 +75,13 @@ module ThriftyBunny
           out = StringIO.new
           transport = Thrift::IOStreamTransport.new input, out
           protocol = @protocol_factory.new.get_protocol transport
+          puts @protocol_factory.inspect
+          puts protocol.inspect
 
           begin
             start_time = Time.now
             Timeout.timeout(process_timeout, ProcessingTimeout) do
+              puts @processor.inspect
               @processor.process protocol, protocol
             end
             processing_time = Time.now - start_time

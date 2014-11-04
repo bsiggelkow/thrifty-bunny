@@ -5,7 +5,6 @@
 #
 
 require 'thrift'
-require_relative 'hello_service_types'
 
 module HelloService
   class Client

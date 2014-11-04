@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+require_relative '../server'
+
+server = Calculator::Server.new
+puts "Starting server ..."
+server.serve
+puts "Done."

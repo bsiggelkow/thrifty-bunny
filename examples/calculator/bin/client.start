@@ -1,0 +1,54 @@
+#!/usr/bin/env ruby
+require_relative '../client'
+
+class ClientCli
+
+  attr_reader :client
+
+  def initialize(client)
+    @client = client
+  end
+
+  def say_hello
+    print "Say Hello: What is your name? "
+    input = gets.strip
+    puts client.say_hello(input)
+  end
+
+  def add
+    print "Add: What is the first value? "
+    value1 = gets.strip.to_i
+    print "Add: What is the second value? "
+    value2 = gets.strip.to_i
+    puts client.add(value1, value2)
+  end
+
+  def divide
+    print "Divide: What is the dividend? "
+    dividend = gets.strip.to_i
+    print "Add: What is the divisor? "
+    divisor = gets.strip.to_i
+    puts client.divide(dividend, divisor)
+  end
+
+  def ping
+    print "Send ping?"
+    input = gets.strip
+    if input =~ /^y/i
+      client.ping
+      puts "Success!"
+    end
+  end
+end
+
+transport = ThriftyBunny::ClientTransport.new
+protocol = Thrift::BinaryProtocol.new(transport)
+client = Calculator::Client.new(protocol)
+client_cli = ClientCli.new(client)
+
+loop do
+  client_cli.say_hello
+  client_cli.add
+  client_cli.divide
+  client_cli.ping
+end
