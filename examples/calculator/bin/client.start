@@ -47,8 +47,8 @@ client = Calculator::Client.new(protocol)
 client_cli = ClientCli.new(client)
 
 loop do
-  client_cli.say_hello
   client_cli.add
-  client_cli.divide
+  client_cli.say_hello
   client_cli.ping
+  client_cli.divide
 end
