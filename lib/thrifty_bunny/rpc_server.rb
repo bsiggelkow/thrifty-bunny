@@ -41,14 +41,9 @@ module ThriftyBunny
 
       #Create a channel to the service queue
       @request_channel = @conn.create_channel(nil, max_messages )
+      @request_channel.prefetch(options[:prefetch]) if options[:prefetch]
 
-      if @exchange.nil?
-        @service_exchange = @request_channel.default_exchange
-        @request_queue = @request_channel.queue(@queue_name, :auto_delete => true)
-      else
-        @service_exchange = @request_channel.direct(@exchange,:durable => true)
-        @request_queue = @request_channel.queue(@queue_name, :auto_delete => true).bind(@service_exchange, :routing_key => @queue_name)
-      end
+      @request_queue = @request_channel.queue(@queue_name, :auto_delete => true)
 
       @request_queue.subscribe(:block => true) do |delivery_info, properties, payload|
 

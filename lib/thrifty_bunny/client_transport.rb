@@ -54,17 +54,18 @@ module ThriftyBunny
     #just send and go!
     def flush(options={})
 
-      operation = options.has_key?(:operation) ? options[:operation] : ""
+      operation = options[:operation] || ""
       blocking = options.has_key?(:blocking) ? options[:blocking] : true
-      msg_timeout = options.has_key?(:msg_timeout) ? options[:msg_timeout] : 10
+      msg_timeout = options[:msg_timeout] || 10
       log_messages = options.has_key?(:log_messages) ? options[:log_messages] : true
 
       correlation_id = self.generate_uuid
 
-      headers = {:service_name      => @service_queue_name,
-                 :operation         => operation,
-                 :response_required => blocking,   #Tell the receiver if a response is required
-                 :from_name         => @from_name
+      headers = {
+        :service_name      => @service_queue_name,
+        :operation         => operation,
+        :response_required => blocking,   #Tell the receiver if a response is required
+        :from_name         => @from_name
       }
 
       #Publish the message

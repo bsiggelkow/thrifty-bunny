@@ -13,7 +13,7 @@ module Calculator
       value1 + value2
     end
     def divide(dividend, divisor)
-      dividend /  divisor
+      dividend.to_f /  divisor.to_f
     end
 
     def ping
@@ -30,7 +30,7 @@ module Calculator
     end
 
     def serve
-      service.serve(log_messages: true)
+      service.serve(log_messages: false, prefetch: 2)
     end
   end
 
