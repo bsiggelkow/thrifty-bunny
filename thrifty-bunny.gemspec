@@ -25,6 +25,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'thrift'
   spec.add_dependency 'thin'
-  spec.add_dependency 'bunny'
+  spec.add_dependency 'bunny', '~> 1.6.3'
   spec.add_dependency 'uuidtools'
 end
