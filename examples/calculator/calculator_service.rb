@@ -5,6 +5,7 @@
 #
 
 require 'thrift'
+require 'calculator_service_types'
 
 module CalculatorService
   class Client
@@ -52,6 +53,7 @@ module CalculatorService
     def recv_divide()
       result = receive_message(Divide_result)
       return result.success unless result.success.nil?
+      raise result.ex unless result.ex.nil?
       raise ::Thrift::ApplicationException.new(::Thrift::ApplicationException::MISSING_RESULT, 'divide failed: unknown result')
     end
 
@@ -91,7 +93,11 @@ module CalculatorService
     def process_divide(seqid, iprot, oprot)
       args = read_args(iprot, Divide_args)
       result = Divide_result.new()
-      result.success = @handler.divide(args.dividend, args.divisor)
+      begin
+        result.success = @handler.divide(args.dividend, args.divisor)
+      rescue ::DivideByZeroException => ex
+        result.ex = ex
+      end
       write_result(result, oprot, 'divide', seqid)
     end
 
@@ -193,9 +199,11 @@ module CalculatorService
   class Divide_result
     include ::Thrift::Struct, ::Thrift::Struct_Union
     SUCCESS = 0
+    EX = 1
 
     FIELDS = {
-      SUCCESS => {:type => ::Thrift::Types::DOUBLE, :name => 'success'}
+      SUCCESS => {:type => ::Thrift::Types::DOUBLE, :name => 'success'},
+      EX => {:type => ::Thrift::Types::STRUCT, :name => 'ex', :class => ::DivideByZeroException}
     }
 
     def struct_fields; FIELDS; end

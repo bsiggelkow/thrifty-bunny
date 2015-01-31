@@ -30,7 +30,7 @@ The gem provides a Thrift server that integrates with RabbitMQ. You would use th
 handler = MyHandler.new
 processor = MyProcessor.new(handler)
 service = ThriftyBunny::RpcServer.new(processor)
-service.serve
+service.serve(log_messages: true)
 ```
 
 Then you would utilize the included ```ClientTransport``` to connect your Thrift client to RabbitMQ:
@@ -56,7 +56,9 @@ Both the ```RpcServer``` and the ```ClientTransport``` accept a ```ThriftyBunny:
     queue         | rpc_queue    | Name of RabbitMQ queue for the RPC messages
     exchange      | rpc_exchange | Name of the RabbitMQ exchange for the RPC messages
 
+## Specs
 
+The specs can be run individually or via a `bundle exec rake spec`. The integration specs require RabbitMQ to be running on the localhost on port 5672. The integration specs will launch the example server, and then exercise the client calls, and the stop the example server.
 
 ## Examples
 

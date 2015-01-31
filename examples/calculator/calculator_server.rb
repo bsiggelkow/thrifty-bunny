@@ -5,13 +5,15 @@ module Calculator
 
   class Handler
     def say_hello(name)
-      puts "Saying hello to #{name}"
       "Hello, #{name} from Thrift!"
     end
+
     def add(value1, value2)
       value1 + value2
     end
+
     def divide(dividend, divisor)
+      raise DivideByZeroException.new("Oops -- you tried to divide by zero; does not work in this universe.") if divisor == 0
       dividend.to_f /  divisor.to_f
     end
 
