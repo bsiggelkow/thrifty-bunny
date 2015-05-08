@@ -58,4 +58,10 @@ describe 'client calls service to' do
     }.to raise_error(DivideByZeroException)
   end
 
+  it 'successfully calculates age' do
+    res = @client.age(10, 65)
+    puts res
+    expect(res).to eq(55)
+  end
+
 end

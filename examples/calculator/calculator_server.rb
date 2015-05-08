@@ -19,6 +19,21 @@ module Calculator
 
     def ping
     end
+
+    def dwarves
+      %w(sneezy dopey doc)
+    end
+
+    def my_pets
+      [ 
+        Pet.new(kind: 'cat', name: 'Winston'), 
+        Pet.new(kind: 'dog', name: 'Eve')
+      ]
+    end
+
+    def age(age_min, age_max)
+      age_max - age_min
+    end
   end
 
   class Server

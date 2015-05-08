@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 require 'thrifty_bunny'
+
+$:.unshift File.dirname(__FILE__)
 require_relative 'calculator_server'
 
 server = Calculator::Server.new

@@ -27,3 +27,21 @@ class DivideByZeroException < ::Thrift::Exception
   ::Thrift::Struct.generate_accessors self
 end
 
+class Pet
+  include ::Thrift::Struct, ::Thrift::Struct_Union
+  KIND = 1
+  NAME = 2
+
+  FIELDS = {
+    KIND => {:type => ::Thrift::Types::STRING, :name => 'kind'},
+    NAME => {:type => ::Thrift::Types::STRING, :name => 'name'}
+  }
+
+  def struct_fields; FIELDS; end
+
+  def validate
+  end
+
+  ::Thrift::Struct.generate_accessors self
+end
+

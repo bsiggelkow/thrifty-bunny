@@ -12,7 +12,7 @@ namespace :generate do
     outdir = 'examples/calculator'
     file = "#{outdir}/calculator_service.thrift"
     %x[thrift -gen rb --out #{outdir} #{file}]
-    puts "Ruby files generated for #{file} to #{outdir}"
+    puts "Ruby files generated for #{file} to #{outdir}. Now go write the handler!"
   end
 
 end

@@ -71,6 +71,51 @@ module CalculatorService
       return
     end
 
+    def dwarves()
+      send_dwarves()
+      return recv_dwarves()
+    end
+
+    def send_dwarves()
+      send_message('dwarves', Dwarves_args)
+    end
+
+    def recv_dwarves()
+      result = receive_message(Dwarves_result)
+      return result.success unless result.success.nil?
+      raise ::Thrift::ApplicationException.new(::Thrift::ApplicationException::MISSING_RESULT, 'dwarves failed: unknown result')
+    end
+
+    def my_pets()
+      send_my_pets()
+      return recv_my_pets()
+    end
+
+    def send_my_pets()
+      send_message('my_pets', My_pets_args)
+    end
+
+    def recv_my_pets()
+      result = receive_message(My_pets_result)
+      return result.success unless result.success.nil?
+      raise ::Thrift::ApplicationException.new(::Thrift::ApplicationException::MISSING_RESULT, 'my_pets failed: unknown result')
+    end
+
+    def age(age_min, age_max)
+      send_age(age_min, age_max)
+      return recv_age()
+    end
+
+    def send_age(age_min, age_max)
+      send_message('age', Age_args, :age_min => age_min, :age_max => age_max)
+    end
+
+    def recv_age()
+      result = receive_message(Age_result)
+      return result.success unless result.success.nil?
+      raise ::Thrift::ApplicationException.new(::Thrift::ApplicationException::MISSING_RESULT, 'age failed: unknown result')
+    end
+
   end
 
   class Processor
@@ -106,6 +151,27 @@ module CalculatorService
       result = Ping_result.new()
       @handler.ping()
       write_result(result, oprot, 'ping', seqid)
+    end
+
+    def process_dwarves(seqid, iprot, oprot)
+      args = read_args(iprot, Dwarves_args)
+      result = Dwarves_result.new()
+      result.success = @handler.dwarves()
+      write_result(result, oprot, 'dwarves', seqid)
+    end
+
+    def process_my_pets(seqid, iprot, oprot)
+      args = read_args(iprot, My_pets_args)
+      result = My_pets_result.new()
+      result.success = @handler.my_pets()
+      write_result(result, oprot, 'my_pets', seqid)
+    end
+
+    def process_age(seqid, iprot, oprot)
+      args = read_args(iprot, Age_args)
+      result = Age_result.new()
+      result.success = @handler.age(args.age_min, args.age_max)
+      write_result(result, oprot, 'age', seqid)
     end
 
   end
@@ -234,6 +300,102 @@ module CalculatorService
 
     FIELDS = {
 
+    }
+
+    def struct_fields; FIELDS; end
+
+    def validate
+    end
+
+    ::Thrift::Struct.generate_accessors self
+  end
+
+  class Dwarves_args
+    include ::Thrift::Struct, ::Thrift::Struct_Union
+
+    FIELDS = {
+
+    }
+
+    def struct_fields; FIELDS; end
+
+    def validate
+    end
+
+    ::Thrift::Struct.generate_accessors self
+  end
+
+  class Dwarves_result
+    include ::Thrift::Struct, ::Thrift::Struct_Union
+    SUCCESS = 0
+
+    FIELDS = {
+      SUCCESS => {:type => ::Thrift::Types::LIST, :name => 'success', :element => {:type => ::Thrift::Types::STRING}}
+    }
+
+    def struct_fields; FIELDS; end
+
+    def validate
+    end
+
+    ::Thrift::Struct.generate_accessors self
+  end
+
+  class My_pets_args
+    include ::Thrift::Struct, ::Thrift::Struct_Union
+
+    FIELDS = {
+
+    }
+
+    def struct_fields; FIELDS; end
+
+    def validate
+    end
+
+    ::Thrift::Struct.generate_accessors self
+  end
+
+  class My_pets_result
+    include ::Thrift::Struct, ::Thrift::Struct_Union
+    SUCCESS = 0
+
+    FIELDS = {
+      SUCCESS => {:type => ::Thrift::Types::SET, :name => 'success', :element => {:type => ::Thrift::Types::STRUCT, :class => ::Pet}}
+    }
+
+    def struct_fields; FIELDS; end
+
+    def validate
+    end
+
+    ::Thrift::Struct.generate_accessors self
+  end
+
+  class Age_args
+    include ::Thrift::Struct, ::Thrift::Struct_Union
+    AGE_MIN = 1
+    AGE_MAX = 2
+
+    FIELDS = {
+      AGE_MIN => {:type => ::Thrift::Types::I32, :name => 'age_min'},
+      AGE_MAX => {:type => ::Thrift::Types::I32, :name => 'age_max'}
+    }
+
+    def struct_fields; FIELDS; end
+
+    def validate
+    end
+
+    ::Thrift::Struct.generate_accessors self
+  end
+
+  class Age_result
+    include ::Thrift::Struct, ::Thrift::Struct_Union
+    SUCCESS = 0
+
+    FIELDS = {
+      SUCCESS => {:type => ::Thrift::Types::I32, :name => 'success'}
     }
 
     def struct_fields; FIELDS; end
