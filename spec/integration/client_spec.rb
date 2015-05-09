@@ -9,7 +9,7 @@ describe 'client calls service to' do
     @pid = fork do
       Signal.trap("HUP") { puts "Stopping server as planned."; exit }
       puts "Starting server as planned."
-      server = Calculator::Server.new
+      server = Calculator::Server.new(timeout: 5)
       server.serve
     end
   end
@@ -23,7 +23,8 @@ describe 'client calls service to' do
   end
 
   def start_client
-    @transport = ThriftyBunny::ClientTransport.new
+    config = ThriftyBunny::Config.new(timeout: 10)
+    @transport = ThriftyBunny::ClientTransport.new(config)
     protocol = Thrift::BinaryProtocol.new(@transport)
     @client = CalculatorService::Client.new(protocol)
   end
@@ -62,6 +63,13 @@ describe 'client calls service to' do
     res = @client.age(10, 65)
     puts res
     expect(res).to eq(55)
+  end
+
+  it 'receives a response timeout' do
+    # snooze for one second longer than timeout
+    expect {
+      @client.snooze(11)
+    }.to raise_error(ThriftyBunny::ResponseTimeout)
   end
 
 end

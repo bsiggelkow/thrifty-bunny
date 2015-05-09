@@ -14,5 +14,6 @@ service CalculatorService {
   void ping(),
   list<string> dwarves(),
   set<Pet> my_pets(),
-  i32 age(1: i32 age_min, 2: i32 age_max)
+  i32 age(1: i32 age_min, 2: i32 age_max),
+  void snooze(i32 sleep_time)
 }

@@ -30,6 +30,12 @@ module ThriftyBunny
       @reply_queue               = @ch.queue('', exclusive: true)
       @is_opened                 = true
 
+      @timeout = config.timeout
+      @log = config.log
+    end
+
+    def log?
+      @log
     end
 
     def close
@@ -56,8 +62,6 @@ module ThriftyBunny
 
       operation = options[:operation] || ""
       blocking = options.has_key?(:blocking) ? options[:blocking] : true
-      msg_timeout = options[:msg_timeout] || 10
-      log_messages = options.has_key?(:log_messages) ? options[:log_messages] : true
 
       correlation_id = self.generate_uuid
 
@@ -69,12 +73,12 @@ module ThriftyBunny
       }
 
       #Publish the message
-      print_log "Publishing message reply-to: #{@reply_queue.name} - headers: #{headers}", correlation_id if log_messages
+      print_log "Publishing message reply-to: #{@reply_queue.name} - headers: #{headers}", correlation_id if log?
       start_time = Time.now
       @service_exchange.publish(@outbuf,
                                 :routing_key    => @service_queue_name,
                                 :correlation_id => correlation_id,
-                                :expiration     => msg_timeout,
+                                :expiration     => @timeout,
                                 :reply_to       => @reply_queue.name,
                                 :headers        => headers)
 
@@ -84,10 +88,10 @@ module ThriftyBunny
         @response = ""
         begin
           #Adding 1sec to timeout to account for clock differences
-          Timeout.timeout(msg_timeout + 1, ResponseTimeout) do
+          Timeout.timeout(@timeout + 1, ResponseTimeout) do
             @reply_queue.subscribe(:block => true) do |delivery_info, properties, payload|
 
-              if log_messages
+              if log?
                 response_time = Time.now - start_time
                 print_log "---- Response Message received in #{response_time}sec for #{@reply_queue.name}", correlation_id
                 print_log "HEADERS: #{properties}", correlation_id
@@ -104,7 +108,7 @@ module ThriftyBunny
         rescue ResponseTimeout => ex
           #Trying to work around weirdness being seen in a multi threaded workflow environment
           if @response == ""
-            msg = "A timeout has occurred (#{msg_timeout}sec) trying to call #{@service_queue_name}.#{operation}"
+            msg = "A timeout has occurred (#{@timeout}sec) trying to call #{@service_queue_name}.#{operation}"
             print_log msg, correlation_id
             raise ex, msg
           else

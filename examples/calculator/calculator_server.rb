@@ -34,19 +34,25 @@ module Calculator
     def age(age_min, age_max)
       age_max - age_min
     end
+
+    def snooze(sleep_time)
+      sleep sleep_time
+    end
+
   end
 
   class Server
     attr_reader :service
 
     def initialize(options={})
+      config = ThriftyBunny::Config.new(options)
       handler = Handler.new
       processor = CalculatorService::Processor.new(handler)
-      @service = ThriftyBunny::RpcServer.new(processor)
+      @service = ThriftyBunny::RpcServer.new(processor, config)
     end
 
     def serve
-      service.serve(log_messages: false, prefetch: 2)
+      service.serve(prefetch: 2)
     end
   end
 

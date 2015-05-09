@@ -21,6 +21,12 @@ module ThriftyBunny
       @protocol_factory = options[:protocol_factory] || Thrift::BinaryProtocolFactory
       @exchange = config.exchange
 
+      @timeout = config.timeout
+      @log = config.log
+    end
+
+    def log?
+      @log
     end
 
     def close
@@ -35,9 +41,7 @@ module ThriftyBunny
     end
 
     def serve(options={})
-      log_messages = options[:log_messages] || false
       max_messages = options[:max_messages].nil? ? 10 : options[:max_messages]
-      response_timeout = options[:response_timeout] || 10
 
       #Create a channel to the service queue
       @request_channel = @conn.create_channel(nil, max_messages )
@@ -47,7 +51,7 @@ module ThriftyBunny
 
       @request_queue.subscribe(:block => true) do |delivery_info, properties, payload|
 
-        if log_messages
+        if log?
           Thread.current["correlation_id"] = properties.correlation_id
           print_log "---- Message received ----"
           print_log "HEADERS: #{properties}"
@@ -59,12 +63,13 @@ module ThriftyBunny
         response_exchange = response_channel.default_exchange
 
         response_required = properties.headers.has_key?('response_required') ? properties.headers['response_required'] : true
-        process_timeout = response_timeout.to_i > properties.expiration.to_i ? response_timeout.to_i : properties.expiration.to_i
+        process_timeout = @timeout > properties.expiration.to_i ? @timeout : properties.expiration.to_i
+        puts "!!!!!!!!!!! process_timeout: #{process_timeout}"
 
         #Binary content will imply thrift based message payload
         if properties.content_type == 'application/octet-stream'
 
-          print_log "Request to process #{@queue_name}.#{properties.headers['operation']} in #{process_timeout}sec" if log_messages
+          print_log "Request to process #{@queue_name}.#{properties.headers['operation']} in #{process_timeout}sec" if log?
 
           input = StringIO.new payload
           out = StringIO.new
@@ -82,7 +87,7 @@ module ThriftyBunny
             if out.length > 0
               out.rewind
 
-              print_log "Time to process request: #{processing_time}sec  Response length: #{out.length}"   if log_messages
+              print_log "Time to process request: #{processing_time}sec  Response length: #{out.length}" if log?
 
               if response_required
                 response_exchange.publish(out.read(out.length),

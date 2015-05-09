@@ -2,7 +2,8 @@ require 'bunny'
 
 module ThriftyBunny
   class Config
-    attr_reader :host, :port, :vhost, :user, :password, :ssl, :queue, :exchange
+    attr_reader :host, :port, :vhost, :user, :password, :ssl, :queue, :exchange,
+                :timeout, :log
 
     def initialize(options={})
       @host = options[:host] || '127.0.0.1'
@@ -15,6 +16,9 @@ module ThriftyBunny
 
       @queue = options[:queue] || 'rpc_queue'
       @exchange = options[:exchange] || 'rpc_exchange'
+
+      @timeout = options[:timeout] || 30 # seconds
+      @log = options[:log].nil? ? true : options[:log]
     end
 
     def bunny_config
