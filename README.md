@@ -46,7 +46,7 @@ client.my_remote_method() # Make the remote procedure call
 
 Both the ```RpcServer``` and the ```ClientTransport``` accept a ```ThriftyBunny::Config``` object that encapsulates the RabbitMQ configuration settings. The default values for the configuration options are:
 
-    option        | value        | notes
+    option        | default      | notes
     ------------- | ------------ | -------------------------------------
     host          | 127.0.0.1    | Host name or IP for the RabbitMQ host
     port          | 5672         | Port that RabbitMQ is listening on
@@ -55,6 +55,8 @@ Both the ```RpcServer``` and the ```ClientTransport``` accept a ```ThriftyBunny:
     password      | guest        | RabbitMQ password
     queue         | rpc_queue    | Name of RabbitMQ queue for the RPC messages
     exchange      | rpc_exchange | Name of the RabbitMQ exchange for the RPC messages
+    timeout       | 10           | Timeout (in seconds)
+    log           | true         | Log debugging messages to stdout
 
 ## Specs
 
